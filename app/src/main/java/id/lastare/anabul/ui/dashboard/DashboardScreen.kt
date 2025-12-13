@@ -1,26 +1,17 @@
 package id.lastare.anabul.ui.dashboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -127,21 +118,28 @@ fun DashboardContent(modifier: Modifier = Modifier) {
                         QuickActionItem(
                             Icons.Filled.ShoppingCart,
                             "Penjualan",
-                            MaterialTheme.colorScheme.primary
+                            Color(0xFF6C63FF)
                         )
                     }
                     item {
                         QuickActionItem(
                             Icons.Filled.Inventory,
                             "Etalase",
-                            MaterialTheme.colorScheme.secondary
+                            Color(0xFF00BFA6)
                         )
                     }
                     item {
                         QuickActionItem(
-                            Icons.Filled.Money,
+                            Icons.Filled.AccountBalanceWallet,
                             "Saldo",
-                            MaterialTheme.colorScheme.tertiary
+                            Color(0xFFFFC107)
+                        )
+                    }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.Category,
+                            "Produk",
+                            Color(0xFFFF6584)
                         )
                     }
                 }
@@ -151,7 +149,7 @@ fun DashboardContent(modifier: Modifier = Modifier) {
         item {
             PaddingWrapper {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    SectionHeader(title = "Transaksi terkini", actionText = "Tampilkan Semua")
+                    SectionHeader(title = "Transaksi Terkini", actionText = "Selengkapnya")
                     TransactionItem(
                         name = "Bolt Ikan Ungu",
                         time = "10:30 AM",
@@ -197,8 +195,11 @@ fun SalesSummaryCard() {
             )
 
             Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "Total Penjualan Hari Ini",
@@ -355,20 +356,20 @@ fun DashboardBottomBar() {
         NavigationBarItem(
             selected = true,
             onClick = { },
-            icon = { Icon(Icons.Filled.Dashboard, contentDescription = "Beranda") },
-            label = { Text("Beranda") }
+            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+            label = { Text("Home") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { },
-            icon = { Icon(Icons.Filled.PieChart, contentDescription = "Inventori") },
-            label = { Text("Inventori") }
+            icon = { Icon(Icons.Filled.PieChart, contentDescription = "Stats") },
+            label = { Text("Stats") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { },
-            icon = { Icon(Icons.Filled.Settings, contentDescription = "Setting") },
-            label = { Text("Setting") }
+            icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
+            label = { Text("Settings") }
         )
     }
 }
