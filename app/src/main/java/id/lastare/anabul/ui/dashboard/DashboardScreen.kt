@@ -12,7 +12,7 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -122,7 +122,7 @@ fun DashboardContent(modifier: Modifier = Modifier) {
                     }
                     item {
                         QuickActionItem(
-                            Icons.Filled.Inventory,
+                            Icons.Filled.Kitchen,
                             "Etalase",
                             Color(0xFF00BFA6)
                         )
@@ -361,8 +361,8 @@ fun DashboardBottomBar() {
         NavigationBarItem(
             selected = false,
             onClick = { },
-            icon = { Icon(Icons.Filled.PieChart, contentDescription = "Stats") },
-            label = { Text("Stats") }
+            icon = { Icon(Icons.Filled.Inventory, contentDescription = "Inventori") },
+            label = { Text("Inventori") }
         )
         NavigationBarItem(
             selected = false,
