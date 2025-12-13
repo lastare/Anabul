@@ -9,19 +9,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Kitchen
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,7 +37,6 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 fun DashboardScreen() {
     Scaffold(
         topBar = { DashboardTopBar() },
-        bottomBar = { DashboardBottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         DashboardContent(Modifier.padding(paddingValues))
@@ -95,7 +89,7 @@ fun DashboardTopBar() {
 fun DashboardContent(modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 100.dp),
+        contentPadding = PaddingValues(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         item {
@@ -116,7 +110,7 @@ fun DashboardContent(modifier: Modifier = Modifier) {
                     item {
                         QuickActionItem(
                             Icons.Filled.ShoppingCart,
-                            "Penjualan",
+                            "Toko",
                             Color(0xFF6C63FF)
                         )
                     }
@@ -136,8 +130,8 @@ fun DashboardContent(modifier: Modifier = Modifier) {
                     }
                     item {
                         QuickActionItem(
-                            Icons.Filled.Category,
-                            "Produk",
+                            Icons.Filled.Warehouse,
+                            "Gudang",
                             Color(0xFFFF6584)
                         )
                     }
@@ -343,33 +337,6 @@ fun SectionHeader(title: String, actionText: String? = null) {
                 Text(text = actionText)
             }
         }
-    }
-}
-
-@Composable
-fun DashboardBottomBar() {
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp
-    ) {
-        NavigationBarItem(
-            selected = true,
-            onClick = { },
-            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-            label = { Text("Home") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Filled.Inventory, contentDescription = "Inventori") },
-            label = { Text("Inventori") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
-            label = { Text("Settings") }
-        )
     }
 }
 
