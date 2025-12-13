@@ -47,8 +47,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun AnabulTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Changed to false to force our custom palette
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

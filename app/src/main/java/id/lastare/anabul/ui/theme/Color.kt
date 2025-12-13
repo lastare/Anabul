@@ -17,7 +17,6 @@ val OnSurface = Color(0xFF2D3436)
 val OnSurfaceVariant = Color(0xFF636E72)
 val Error = Color(0xFFFF5252)
 
-// Dark Theme Colors (Optional, but good to have)
 val PrimaryDark = Color(0xFFB3B0FF)
 val SecondaryDark = Color(0xFF66FFE3)
 val TertiaryDark = Color(0xFFFFB3C1)

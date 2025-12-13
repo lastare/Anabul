@@ -73,7 +73,6 @@ fun DashboardTopBar() {
             )
         }
 
-        // Profile Placeholder
         Surface(
             modifier = Modifier.size(48.dp),
             shape = CircleShape,
@@ -246,7 +245,7 @@ fun QuickActionItem(icon: ImageVector, label: String, color: Color) {
             modifier = Modifier.size(64.dp),
             shape = RoundedCornerShape(20.dp),
             color = color.copy(alpha = 0.1f),
-            onClick = { /* Handle click */ }
+            onClick = { }
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -340,7 +339,7 @@ fun SectionHeader(title: String, actionText: String? = null) {
             color = MaterialTheme.colorScheme.onSurface
         )
         if (actionText != null) {
-            TextButton(onClick = { /* TODO */ }) {
+            TextButton(onClick = { }) {
                 Text(text = actionText)
             }
         }
