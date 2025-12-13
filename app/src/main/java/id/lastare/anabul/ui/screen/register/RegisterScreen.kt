@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -44,13 +43,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import id.lastare.anabul.ui.theme.AnabulTheme
@@ -113,12 +113,12 @@ fun RegisterScreen() {
                     modifier = Modifier.padding(bottom = 32.dp)
                 ) {
                     Text(
-                        text = "Bergabung Bersama",
+                        text = "Segera Mendaftar",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                     )
                     Text(
-                        text = "Anabul POS",
+                        text = "Point Of Sales",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary
@@ -139,13 +139,11 @@ fun RegisterScreen() {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = "Buat Akun Baru",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
+                            text = "Membuat pengguna baru".uppercase(),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-
-                        // Name Field
                         OutlinedTextField(
                             value = name,
                             onValueChange = { name = it },
@@ -156,24 +154,20 @@ fun RegisterScreen() {
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                         )
-
-                        // Email Field
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text("Email") },
+                            label = { Text("Email Aktif") },
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                         )
-
-                        // Password Field
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            label = { Text("Password") },
+                            label = { Text("Password Baru") },
                             leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                             trailingIcon = {
                                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -194,10 +188,12 @@ fun RegisterScreen() {
                         OutlinedTextField(
                             value = confirmPassword,
                             onValueChange = { confirmPassword = it },
-                            label = { Text("Konfirmasi Password") },
+                            label = { Text("Ulangi Password") },
                             leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                             trailingIcon = {
-                                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                                IconButton(onClick = {
+                                    confirmPasswordVisible = !confirmPasswordVisible
+                                }) {
                                     Icon(
                                         imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                         contentDescription = if (confirmPasswordVisible) "Hide password" else "Show password"
@@ -220,24 +216,30 @@ fun RegisterScreen() {
                                 onCheckedChange = { termsAccepted = it }
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            
+
                             val annotatedString = buildAnnotatedString {
-                                append("Setuju dengan ")
-                                pushStringAnnotation(tag = "TERMS", annotation = "terms")
-                                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)) {
-                                    append("syarat dan ketentuan")
-                                }
+                                append("Menyetujui ")
+                                pushLink(
+                                    LinkAnnotation.Clickable(
+                                        tag = "terms",
+                                        styles = TextLinkStyles(
+                                            style = SpanStyle(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        ),
+                                        linkInteractionListener = {
+                                            // TODO: Handle navigation
+                                        }
+                                    )
+                                )
+                                append("Syarat & Ketentuan")
                                 pop()
                             }
-                            
-                            ClickableText(
+
+                            Text(
                                 text = annotatedString,
-                                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-                                onClick = { offset ->
-                                    annotatedString.getStringAnnotations(tag = "TERMS", start = offset, end = offset).firstOrNull()?.let {
-                                        // TODO: Handle navigation
-                                    }
-                                }
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
 
@@ -253,7 +255,7 @@ fun RegisterScreen() {
                             enabled = termsAccepted
                         ) {
                             Text(
-                                text = "Daftar",
+                                text = "Daftar Sekarang",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -261,7 +263,7 @@ fun RegisterScreen() {
                     }
                 }
             }
-            
+
             // Bottom Login Link
             Row(
                 modifier = Modifier
@@ -271,12 +273,16 @@ fun RegisterScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Sudah punya akun? ",
+                    text = "Sudah punya akun?",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 TextButton(onClick = { /* TODO: Navigate to Login */ }) {
-                    Text("Masuk", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    Text(
+                        "Masuk",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
