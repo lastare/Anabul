@@ -1,20 +1,28 @@
 package id.lastare.anabul.ui.dashboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Kitchen
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,6 +30,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +57,8 @@ fun DashboardScreen() {
 
 @Composable
 fun DashboardTopBar() {
+    var expanded by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,18 +81,75 @@ fun DashboardTopBar() {
             )
         }
 
-        Surface(
-            modifier = Modifier.size(48.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shadowElevation = 2.dp
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "H",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+        Box {
+            Surface(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable { expanded = true },
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shadowElevation = 2.dp
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "H",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Profil") },
+                    onClick = { expanded = false },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profil"
+                        )
+                    },
+                    contentPadding = PaddingValues(start = 12.dp, end = 32.dp)
+                )
+                DropdownMenuItem(
+                    text = { Text("Produk") },
+                    onClick = { expanded = false },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Inventory,
+                            contentDescription = "Produk"
+                        )
+                    },
+                    contentPadding = PaddingValues(start = 12.dp, end = 32.dp)
+                )
+                DropdownMenuItem(
+                    text = { Text("Pengaturan") },
+                    onClick = { expanded = false },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Pengaturan"
+                        )
+                    },
+                    contentPadding = PaddingValues(start = 12.dp, end = 32.dp)
+                )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                DropdownMenuItem(
+                    text = { Text("Keluar", color = MaterialTheme.colorScheme.error) },
+                    onClick = { expanded = false },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Keluar",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    contentPadding = PaddingValues(start = 12.dp, end = 32.dp)
                 )
             }
         }
