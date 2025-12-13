@@ -18,19 +18,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.PieChart
-import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -55,16 +51,6 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 fun DashboardScreen() {
     Scaffold(
         topBar = { DashboardTopBar() },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* TODO: New Transaction */ },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = CircleShape
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "New Order")
-            }
-        },
         bottomBar = { DashboardBottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -84,18 +70,18 @@ fun DashboardTopBar() {
     ) {
         Column {
             Text(
-                text = "Hello, Hendra",
-                style = MaterialTheme.typography.titleMedium,
+                text = "Selamat Datang",
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "Anabul POS",
+                text = "Point Of Sales",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-        
+
         // Profile Placeholder
         Surface(
             modifier = Modifier.size(48.dp),
@@ -122,56 +108,70 @@ fun DashboardContent(modifier: Modifier = Modifier) {
         contentPadding = PaddingValues(bottom = 100.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        // Sales Summary Section
         item {
             PaddingWrapper {
                 SalesSummaryCard()
             }
         }
 
-        // Quick Actions Section
         item {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 PaddingWrapper {
-                    SectionHeader(title = "Quick Actions")
+                    SectionHeader(title = "Kerja Cepat")
                 }
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { QuickActionItem(Icons.Filled.ShoppingCart, "Orders", MaterialTheme.colorScheme.primary) }
-                    item { QuickActionItem(Icons.Filled.Inventory, "Products", MaterialTheme.colorScheme.secondary) }
-                    item { QuickActionItem(Icons.Filled.People, "Customers", MaterialTheme.colorScheme.tertiary) }
-                    item { QuickActionItem(Icons.Filled.BarChart, "Reports", MaterialTheme.colorScheme.error) }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.ShoppingCart,
+                            "Penjualan",
+                            MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.Inventory,
+                            "Etalase",
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.Money,
+                            "Saldo",
+                            MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                 }
             }
         }
 
-        // Recent Transactions Section
         item {
             PaddingWrapper {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionHeader(title = "Recent Transactions", actionText = "See All")
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SectionHeader(title = "Transaksi terkini", actionText = "Tampilkan Semua")
                     TransactionItem(
-                        name = "Cat Food Premium",
+                        name = "Bolt Ikan Ungu",
                         time = "10:30 AM",
-                        amount = "Rp 150.000",
-                        status = "Completed",
+                        amount = "Rp 18.000",
+                        status = "Cash",
                         statusColor = Color(0xFF4CAF50)
                     )
                     TransactionItem(
-                        name = "Dog Grooming Service",
+                        name = "Choize Salmon Oren",
                         time = "09:15 AM",
-                        amount = "Rp 350.000",
-                        status = "Completed",
-                        statusColor = Color(0xFF4CAF50)
+                        amount = "Rp 19.000",
+                        status = "Qris",
+                        statusColor = Color(0xFFFF9800)
                     )
                     TransactionItem(
-                        name = "Pet Toy Bundle",
-                        time = "Yesterday",
-                        amount = "Rp 75.000",
-                        status = "Pending",
-                        statusColor = Color(0xFFFF9800)
+                        name = "Louve Pasir 25L",
+                        time = "Kemarin",
+                        amount = "Rp 58.000",
+                        status = "Cash",
+                        statusColor = Color(0xFF4CAF50)
                     )
                 }
             }
@@ -188,24 +188,25 @@ fun SalesSummaryCard() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Decorative background
-            Box(modifier = Modifier
-                .offset(x = 180.dp, y = (-40).dp)
-                .size(250.dp)
-                .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.1f)))
-            
+            Box(
+                modifier = Modifier
+                    .offset(x = 180.dp, y = (-40).dp)
+                    .size(200.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.1f))
+            )
+
             Column(
                 modifier = Modifier.padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Total Sales Today",
+                    text = "Total Penjualan Hari Ini",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                 )
                 Text(
-                    text = "Rp 2.540.000",
+                    text = "Rp 1.024.000",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary
@@ -224,7 +225,7 @@ fun SalesSummaryCard() {
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "+12% from yesterday",
+                        text = "+12% dari kemarin",
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White
                     )
@@ -265,7 +266,13 @@ fun QuickActionItem(icon: ImageVector, label: String, color: Color) {
 }
 
 @Composable
-fun TransactionItem(name: String, time: String, amount: String, status: String, statusColor: Color) {
+fun TransactionItem(
+    name: String,
+    time: String,
+    amount: String,
+    status: String,
+    statusColor: Color
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -279,27 +286,29 @@ fun TransactionItem(name: String, time: String, amount: String, status: String, 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.Receipt,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column {
-                    Text(text = name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                    Text(text = time, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = time,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text(text = amount, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                Text(
+                    text = amount,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
                 Surface(
                     color = statusColor.copy(alpha = 0.1f),
                     shape = RoundedCornerShape(4.dp)
@@ -346,20 +355,20 @@ fun DashboardBottomBar() {
         NavigationBarItem(
             selected = true,
             onClick = { },
-            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-            label = { Text("Home") }
+            icon = { Icon(Icons.Filled.Dashboard, contentDescription = "Beranda") },
+            label = { Text("Beranda") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { },
-            icon = { Icon(Icons.Filled.PieChart, contentDescription = "Stats") },
-            label = { Text("Stats") }
+            icon = { Icon(Icons.Filled.PieChart, contentDescription = "Inventori") },
+            label = { Text("Inventori") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { },
-            icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
-            label = { Text("Settings") }
+            icon = { Icon(Icons.Filled.Settings, contentDescription = "Setting") },
+            label = { Text("Setting") }
         )
     }
 }
