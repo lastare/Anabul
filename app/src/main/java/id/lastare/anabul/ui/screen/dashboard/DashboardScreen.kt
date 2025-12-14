@@ -56,12 +56,19 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    onNavigateToStore: () -> Unit = {},
+    onNavigateToShowcase: () -> Unit = {}
+) {
     Scaffold(
         topBar = { DashboardTopBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        DashboardContent(Modifier.padding(paddingValues))
+        DashboardContent(
+            modifier = Modifier.padding(paddingValues),
+            onNavigateToStore = onNavigateToStore,
+            onNavigateToShowcase = onNavigateToShowcase
+        )
     }
 }
 
@@ -167,7 +174,11 @@ fun DashboardTopBar() {
 }
 
 @Composable
-fun DashboardContent(modifier: Modifier = Modifier) {
+fun DashboardContent(
+    modifier: Modifier = Modifier,
+    onNavigateToStore: () -> Unit = {},
+    onNavigateToShowcase: () -> Unit = {}
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 24.dp),
@@ -192,14 +203,16 @@ fun DashboardContent(modifier: Modifier = Modifier) {
                         QuickActionItem(
                             Icons.Filled.ShoppingCart,
                             "Toko",
-                            Color(0xFF6C63FF)
+                            Color(0xFF6C63FF),
+                            onClick = onNavigateToStore
                         )
                     }
                     item {
                         QuickActionItem(
                             Icons.Filled.Kitchen,
                             "Etalase",
-                            Color(0xFF00BFA6)
+                            Color(0xFF00BFA6),
+                            onClick = onNavigateToShowcase
                         )
                     }
                     item {
@@ -311,7 +324,12 @@ fun SalesSummaryCard() {
 }
 
 @Composable
-fun QuickActionItem(icon: ImageVector, label: String, color: Color) {
+fun QuickActionItem(
+    icon: ImageVector,
+    label: String,
+    color: Color,
+    onClick: () -> Unit = {}
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -320,7 +338,7 @@ fun QuickActionItem(icon: ImageVector, label: String, color: Color) {
             modifier = Modifier.size(64.dp),
             shape = RoundedCornerShape(20.dp),
             color = color.copy(alpha = 0.1f),
-            onClick = { }
+            onClick = onClick
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(

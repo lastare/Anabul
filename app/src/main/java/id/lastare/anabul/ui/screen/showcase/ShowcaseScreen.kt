@@ -1,5 +1,7 @@
 package id.lastare.anabul.ui.screen.showcase
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,34 +14,44 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.Warehouse
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import id.lastare.anabul.ui.theme.AnabulTheme
@@ -48,22 +60,18 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 @Composable
 fun ShowcaseScreen(
     onNavigateBack: () -> Unit = {},
-    onRestockFromWarehouse: () -> Unit = {}
+    onAddProduct: () -> Unit = {}
 ) {
-    // Dummy Data: Low Stock & Out of Stock
-    val alertItems = listOf(
-        ShowcaseAlert("Whiskas Tuna 1.2kg", 0, StockStatus.EMPTY),
-        ShowcaseAlert("Royal Canin Adult", 2, StockStatus.LOW),
-        ShowcaseAlert("Kalung Kucing", 3, StockStatus.LOW)
-    )
-
-    // Dummy Data: Transactions (Sales & Warehouse Restock)
-    val transactions = listOf(
-        ShowcaseTransaction("Bolt Ikan Ungu 1kg", "Penjualan", 2, Color(0xFFF44336)), // Red for Sales (Out)
-        ShowcaseTransaction("Whiskas Tuna 1.2kg", "Dari Gudang", 10, Color(0xFF4CAF50)), // Green for Warehouse (In)
-        ShowcaseTransaction("Pasir Kucing Wangi", "Penjualan", 1, Color(0xFFF44336)),
-        ShowcaseTransaction("Me-O Creamy Treats", "Dari Gudang", 50, Color(0xFF4CAF50)),
-        ShowcaseTransaction("Royal Canin Adult", "Penjualan", 1, Color(0xFFF44336))
+    var searchQuery by remember { mutableStateOf("") }
+    
+    // Dummy Data
+    val showcaseItems = listOf(
+        ShowcaseItem("Royal Canin Kitten", "Makanan", "Rp 245.000", 4.8, true, Color(0xFFFF5252)),
+        ShowcaseItem("Whiskas Tuna", "Makanan", "Rp 65.000", 4.5, true, Color(0xFF7E57C2)),
+        ShowcaseItem("Pasir Wangi Lavender", "Perlengkapan", "Rp 45.000", 4.7, false, Color(0xFF26A69A)),
+        ShowcaseItem("Mainan Pancingan", "Aksesoris", "Rp 15.000", 4.9, true, Color(0xFFFFCA28)),
+        ShowcaseItem("Kandang Besi Lipat", "Kandang", "Rp 350.000", 4.6, false, Color(0xFF42A5F5)),
+        ShowcaseItem("Shampoo Kutu", "Perawatan", "Rp 35.000", 4.4, true, Color(0xFFEC407A))
     )
 
     Scaffold(
@@ -71,7 +79,7 @@ fun ShowcaseScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Etalase Toko",
+                        "Etalase Produk",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -81,210 +89,180 @@ fun ShowcaseScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
                     }
                 },
+                actions = {
+                    IconButton(onClick = { /* Filter action */ }) {
+                        Icon(Icons.Default.FilterList, contentDescription = "Filter")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onRestockFromWarehouse,
+            FloatingActionButton(
+                onClick = onAddProduct,
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Ambil dari Gudang") }
-            )
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Tambah Produk")
+            }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp)
         ) {
-            // Section: Alerts (Low & Empty Stock)
-            if (alertItems.isNotEmpty()) {
-                item {
-                    Text(
-                        text = "Perhatian Stok",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+            // Search Bar
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                placeholder = { Text("Cari produk di etalase...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                ),
+                singleLine = true
+            )
+
+            // Grid Content
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 80.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(showcaseItems) { item ->
+                    ShowcaseItemCard(item)
                 }
-
-                items(alertItems) { item ->
-                    StockAlertCard(item)
-                }
-            }
-
-            // Section: History
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Riwayat Etalase",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    text = "Transaksi Penjualan & Masuk dari Gudang",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            items(transactions) { transaction ->
-                ShowcaseTransactionItem(transaction)
             }
         }
     }
 }
 
-enum class StockStatus { LOW, EMPTY }
-
-data class ShowcaseAlert(
-    val productName: String,
-    val remainingStock: Int,
-    val status: StockStatus
-)
-
-data class ShowcaseTransaction(
-    val productName: String,
-    val type: String, // "Penjualan" or "Dari Gudang"
-    val amount: Int,
+data class ShowcaseItem(
+    val name: String,
+    val category: String,
+    val price: String,
+    val rating: Double,
+    val isFeatured: Boolean,
     val color: Color
 )
 
 @Composable
-fun StockAlertCard(item: ShowcaseAlert) {
-    val containerColor = if (item.status == StockStatus.EMPTY) 
-        MaterialTheme.colorScheme.errorContainer 
-    else 
-        Color(0xFFFFE082) // Warning Yellow/Amber
-
-    val contentColor = if (item.status == StockStatus.EMPTY) 
-        MaterialTheme.colorScheme.onErrorContainer 
-    else 
-        Color(0xFF5D4037) // Dark Brown for contrast on Yellow
-
+fun ShowcaseItemCard(item: ShowcaseItem) {
     Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        modifier = Modifier.fillMaxWidth()
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = Modifier.clickable { }
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = if (item.status == StockStatus.EMPTY) Icons.Default.Inventory else Icons.Default.Warning,
-                    contentDescription = null,
-                    tint = contentColor,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = item.productName,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = contentColor
+        Column {
+            // Image Placeholder Area
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                item.color.copy(alpha = 0.4f),
+                                item.color.copy(alpha = 0.1f)
+                            )
+                        )
                     )
+            ) {
+                // Category Tag
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .align(Alignment.TopStart)
+                ) {
                     Text(
-                        text = if (item.status == StockStatus.EMPTY) "Stok Kosong!" else "Stok Menipis",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = contentColor.copy(alpha = 0.8f)
+                        text = item.category,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                // Featured Star
+                if (item.isFeatured) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Featured",
+                        tint = Color(0xFFFFC107),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(12.dp)
+                            .size(20.dp)
                     )
                 }
             }
-            
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = contentColor.copy(alpha = 0.1f)
+
+            // Info Area
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "${item.remainingStock} pcs",
-                    style = MaterialTheme.typography.labelLarge,
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = contentColor,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun ShowcaseTransactionItem(transaction: ShowcaseTransaction) {
-    val isSale = transaction.type == "Penjualan"
-    
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = transaction.color.copy(alpha = 0.1f),
-                    modifier = Modifier.size(48.dp)
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = item.price,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = if (isSale) Icons.AutoMirrored.Filled.TrendingDown else Icons.Default.Warehouse,
-                            contentDescription = transaction.type,
-                            tint = transaction.color,
-                            modifier = Modifier.size(24.dp)
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = item.rating.toString(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
-
-                Column {
-                    Text(
-                        text = transaction.productName,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = transaction.type,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = transaction.color
-                    )
-                }
             }
-
-            Text(
-                text = "${if (isSale) "-" else "+"}${transaction.amount}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = transaction.color
-            )
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ShowcasePreview() {
+fun ShowcaseScreenPreview() {
     AnabulTheme {
         ShowcaseScreen()
     }
