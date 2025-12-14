@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -59,7 +60,8 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 fun DashboardScreen(
     onNavigateToStore: () -> Unit = {},
     onNavigateToShowcase: () -> Unit = {},
-    onNavigateToBalance: () -> Unit = {}
+    onNavigateToBalance: () -> Unit = {},
+    onNavigateToReport: () -> Unit = {}
 ) {
     Scaffold(
         topBar = { DashboardTopBar() },
@@ -69,7 +71,8 @@ fun DashboardScreen(
             modifier = Modifier.padding(paddingValues),
             onNavigateToStore = onNavigateToStore,
             onNavigateToShowcase = onNavigateToShowcase,
-            onNavigateToBalance = onNavigateToBalance
+            onNavigateToBalance = onNavigateToBalance,
+            onNavigateToReport = onNavigateToReport
         )
     }
 }
@@ -180,7 +183,8 @@ fun DashboardContent(
     modifier: Modifier = Modifier,
     onNavigateToStore: () -> Unit = {},
     onNavigateToShowcase: () -> Unit = {},
-    onNavigateToBalance: () -> Unit = {}
+    onNavigateToBalance: () -> Unit = {},
+    onNavigateToReport: () -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -189,7 +193,7 @@ fun DashboardContent(
     ) {
         item {
             PaddingWrapper {
-                SalesSummaryCard()
+                SalesSummaryCard(onNavigateToReport)
             }
         }
 
@@ -224,6 +228,14 @@ fun DashboardContent(
                             "Saldo",
                             Color(0xFFFFC107),
                             onClick = onNavigateToBalance
+                        )
+                    }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.Summarize,
+                            "Laporan",
+                            Color(0xFF2196F3),
+                            onClick = onNavigateToReport
                         )
                     }
                     item {
@@ -269,9 +281,11 @@ fun DashboardContent(
 }
 
 @Composable
-fun SalesSummaryCard() {
+fun SalesSummaryCard(onClick: () -> Unit = {}) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)

@@ -9,11 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import id.lastare.anabul.ui.screen.dashboard.DashboardScreen
-import id.lastare.anabul.ui.screen.store.StoreScreen
-import id.lastare.anabul.ui.screen.showcase.ShowcaseScreen
-import id.lastare.anabul.ui.screen.product.AddProductScreen
 import id.lastare.anabul.ui.screen.balance.BalanceScreen
+import id.lastare.anabul.ui.screen.dashboard.DashboardScreen
+import id.lastare.anabul.ui.screen.product.AddProductScreen
+import id.lastare.anabul.ui.screen.report.ReportScreen
+import id.lastare.anabul.ui.screen.showcase.ShowcaseScreen
+import id.lastare.anabul.ui.screen.store.StoreScreen
 import id.lastare.anabul.ui.theme.AnabulTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
 }
 
 enum class Screen {
-    Dashboard, Store, Showcase, AddProduct, Balance
+    Dashboard, Store, Showcase, AddProduct, Balance, Report
 }
 
 @Composable
@@ -40,7 +41,8 @@ fun AppNavigation() {
         Screen.Dashboard -> DashboardScreen(
             onNavigateToStore = { currentScreen = Screen.Store },
             onNavigateToShowcase = { currentScreen = Screen.Showcase },
-            onNavigateToBalance = { currentScreen = Screen.Balance }
+            onNavigateToBalance = { currentScreen = Screen.Balance },
+            onNavigateToReport = { currentScreen = Screen.Report }
         )
         Screen.Store -> StoreScreen(
             onNavigateBack = { currentScreen = Screen.Dashboard }
@@ -56,6 +58,9 @@ fun AppNavigation() {
             onNavigateBack = { currentScreen = Screen.Dashboard },
             onOpenStore = { currentScreen = Screen.Dashboard },
             onCloseStore = { currentScreen = Screen.Dashboard }
+        )
+        Screen.Report -> ReportScreen(
+            onNavigateBack = { currentScreen = Screen.Dashboard }
         )
     }
 }
