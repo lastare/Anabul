@@ -13,6 +13,7 @@ import id.lastare.anabul.ui.screen.dashboard.DashboardScreen
 import id.lastare.anabul.ui.screen.store.StoreScreen
 import id.lastare.anabul.ui.screen.showcase.ShowcaseScreen
 import id.lastare.anabul.ui.screen.product.AddProductScreen
+import id.lastare.anabul.ui.screen.balance.BalanceScreen
 import id.lastare.anabul.ui.theme.AnabulTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
 }
 
 enum class Screen {
-    Dashboard, Store, Showcase, AddProduct
+    Dashboard, Store, Showcase, AddProduct, Balance
 }
 
 @Composable
@@ -38,7 +39,8 @@ fun AppNavigation() {
     when (currentScreen) {
         Screen.Dashboard -> DashboardScreen(
             onNavigateToStore = { currentScreen = Screen.Store },
-            onNavigateToShowcase = { currentScreen = Screen.Showcase }
+            onNavigateToShowcase = { currentScreen = Screen.Showcase },
+            onNavigateToBalance = { currentScreen = Screen.Balance }
         )
         Screen.Store -> StoreScreen(
             onNavigateBack = { currentScreen = Screen.Dashboard }
@@ -49,6 +51,11 @@ fun AppNavigation() {
         )
         Screen.AddProduct -> AddProductScreen(
             onNavigateBack = { currentScreen = Screen.Showcase }
+        )
+        Screen.Balance -> BalanceScreen(
+            onNavigateBack = { currentScreen = Screen.Dashboard },
+            onOpenStore = { currentScreen = Screen.Dashboard },
+            onCloseStore = { currentScreen = Screen.Dashboard }
         )
     }
 }

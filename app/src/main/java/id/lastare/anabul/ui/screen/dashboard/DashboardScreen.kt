@@ -58,7 +58,8 @@ import id.lastare.anabul.ui.theme.AnabulTheme
 @Composable
 fun DashboardScreen(
     onNavigateToStore: () -> Unit = {},
-    onNavigateToShowcase: () -> Unit = {}
+    onNavigateToShowcase: () -> Unit = {},
+    onNavigateToBalance: () -> Unit = {}
 ) {
     Scaffold(
         topBar = { DashboardTopBar() },
@@ -67,7 +68,8 @@ fun DashboardScreen(
         DashboardContent(
             modifier = Modifier.padding(paddingValues),
             onNavigateToStore = onNavigateToStore,
-            onNavigateToShowcase = onNavigateToShowcase
+            onNavigateToShowcase = onNavigateToShowcase,
+            onNavigateToBalance = onNavigateToBalance
         )
     }
 }
@@ -177,7 +179,8 @@ fun DashboardTopBar() {
 fun DashboardContent(
     modifier: Modifier = Modifier,
     onNavigateToStore: () -> Unit = {},
-    onNavigateToShowcase: () -> Unit = {}
+    onNavigateToShowcase: () -> Unit = {},
+    onNavigateToBalance: () -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -219,7 +222,8 @@ fun DashboardContent(
                         QuickActionItem(
                             Icons.Filled.AccountBalanceWallet,
                             "Saldo",
-                            Color(0xFFFFC107)
+                            Color(0xFFFFC107),
+                            onClick = onNavigateToBalance
                         )
                     }
                     item {
