@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="id.lastare.anabul" />
+                  <option name="mobileSdkAppId" value="1:404960844342:android:a1bf3570b4965f026b5697" />
+                  <option name="projectId" value="petshop-2026" />
+                  <option name="projectNumber" value="404960844342" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
