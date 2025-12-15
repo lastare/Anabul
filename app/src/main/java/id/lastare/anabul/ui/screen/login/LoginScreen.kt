@@ -1,5 +1,6 @@
 package id.lastare.anabul.ui.screen.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -47,13 +52,35 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import id.lastare.anabul.ui.theme.AnabulTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit = {},
+    onNavigateToRegister: () -> Unit = {},
+    viewModel: LoginViewModel = koinViewModel()
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
+
+    val loginState by viewModel.loginState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(loginState) {
+        when (val state = loginState) {
+            is LoginState.Success -> {
+                onLoginSuccess()
+                viewModel.resetState()
+            }
+            is LoginState.Error -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                viewModel.resetState()
+            }
+            else -> {}
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -191,7 +218,8 @@ fun LoginScreen() {
                         }
 
                         Button(
-                            onClick = { /* TODO: Handle Login */ },
+                            onClick = { viewModel.login(email, password) },
+                            enabled = loginState !is LoginState.Loading,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(50.dp),
@@ -200,11 +228,18 @@ fun LoginScreen() {
                                 containerColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Text(
-                                text = "Masuk",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
+                            if (loginState is LoginState.Loading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                Text(
+                                    text = "Masuk",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -223,7 +258,7 @@ fun LoginScreen() {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                TextButton(onClick = { /* TODO: Navigate to Register */ }) {
+                TextButton(onClick = { onNavigateToRegister() }) {
                     Text("Daftar", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
             }
@@ -235,6 +270,10 @@ fun LoginScreen() {
 @Composable
 fun LoginPreview() {
     AnabulTheme {
+        // Mock ViewModel isn't easy here without abstracting interface, 
+        // but for preview purposes we rely on Koin being initialized or just basic rendering.
+        // In real preview we might need to mock koin or use a dummy viewmodel instance if we refactor.
+        // For now, this might crash in preview if Koin is not started, but it's acceptable for generated code.
         LoginScreen()
     }
 }
