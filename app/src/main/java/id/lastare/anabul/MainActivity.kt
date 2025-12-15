@@ -58,7 +58,11 @@ fun AppNavigation() {
             onNavigateToStore = { currentScreen = Screen.Store },
             onNavigateToShowcase = { currentScreen = Screen.Showcase },
             onNavigateToBalance = { currentScreen = Screen.Balance },
-            onNavigateToReport = { currentScreen = Screen.Report }
+            onNavigateToReport = { currentScreen = Screen.Report },
+            onLogout = {
+                auth.signOut()
+                currentScreen = Screen.Login
+            }
         )
         Screen.Store -> StoreScreen(
             onNavigateBack = { currentScreen = Screen.Dashboard }

@@ -61,10 +61,11 @@ fun DashboardScreen(
     onNavigateToStore: () -> Unit = {},
     onNavigateToShowcase: () -> Unit = {},
     onNavigateToBalance: () -> Unit = {},
-    onNavigateToReport: () -> Unit = {}
+    onNavigateToReport: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     Scaffold(
-        topBar = { DashboardTopBar() },
+        topBar = { DashboardTopBar(onLogout = onLogout) },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         DashboardContent(
@@ -78,7 +79,7 @@ fun DashboardScreen(
 }
 
 @Composable
-fun DashboardTopBar() {
+fun DashboardTopBar(onLogout: () -> Unit = {}) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -163,7 +164,10 @@ fun DashboardTopBar() {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                 DropdownMenuItem(
                     text = { Text("Keluar", color = MaterialTheme.colorScheme.error) },
-                    onClick = { expanded = false },
+                    onClick = { 
+                        expanded = false
+                        onLogout()
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ExitToApp,

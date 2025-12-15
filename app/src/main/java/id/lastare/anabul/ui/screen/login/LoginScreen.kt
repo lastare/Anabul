@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -167,7 +168,7 @@ fun LoginScreen(
                             onValueChange = { email = it },
                             label = { Text("Email") },
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().testTag("login_email"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
@@ -188,7 +189,7 @@ fun LoginScreen(
                             },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().testTag("login_password"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true
                         )
@@ -204,7 +205,8 @@ fun LoginScreen(
                             ) {
                                 Checkbox(
                                     checked = rememberMe,
-                                    onCheckedChange = { rememberMe = it }
+                                    onCheckedChange = { rememberMe = it },
+                                    modifier = Modifier.testTag("login_remember_me")
                                 )
                                 Text(
                                     text = "Ingat Saya",
@@ -222,7 +224,8 @@ fun LoginScreen(
                             enabled = loginState !is LoginState.Loading,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp),
+                                .height(50.dp)
+                                .testTag("login_button"),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
@@ -258,7 +261,10 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                TextButton(onClick = { onNavigateToRegister() }) {
+                TextButton(
+                    onClick = { onNavigateToRegister() },
+                    modifier = Modifier.testTag("register_link")
+                ) {
                     Text("Daftar", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
             }
@@ -270,10 +276,6 @@ fun LoginScreen(
 @Composable
 fun LoginPreview() {
     AnabulTheme {
-        // Mock ViewModel isn't easy here without abstracting interface, 
-        // but for preview purposes we rely on Koin being initialized or just basic rendering.
-        // In real preview we might need to mock koin or use a dummy viewmodel instance if we refactor.
-        // For now, this might crash in preview if Koin is not started, but it's acceptable for generated code.
         LoginScreen()
     }
 }
