@@ -5,5 +5,5 @@ data class Stock(
     val created: Long = System.currentTimeMillis(),
     val productId: String = "",
     val inWarehouse: Boolean = true,
-    val count: Int = 0,
+    val quantity: Int = 0,
 )
