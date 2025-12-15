@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -176,7 +177,9 @@ fun RegisterScreen(
                             onValueChange = { name = it },
                             label = { Text("Nama Lengkap") },
                             leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("name_field"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -186,7 +189,9 @@ fun RegisterScreen(
                             onValueChange = { email = it },
                             label = { Text("Email Aktif") },
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("email_field"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
@@ -206,7 +211,9 @@ fun RegisterScreen(
                             },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("password_field"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true
                         )
@@ -229,7 +236,9 @@ fun RegisterScreen(
                             },
                             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("confirm_password_field"),
                             shape = RoundedCornerShape(12.dp),
                             singleLine = true
                         )
@@ -240,7 +249,8 @@ fun RegisterScreen(
                         ) {
                             Checkbox(
                                 checked = termsAccepted,
-                                onCheckedChange = { termsAccepted = it }
+                                onCheckedChange = { termsAccepted = it },
+                                modifier = Modifier.testTag("terms_checkbox")
                             )
                             Spacer(modifier = Modifier.width(4.dp))
 
@@ -280,7 +290,8 @@ fun RegisterScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp),
+                                .height(50.dp)
+                                .testTag("register_button"),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
