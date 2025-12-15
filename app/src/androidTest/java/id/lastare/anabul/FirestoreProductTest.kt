@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.MemoryCacheSettings
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -33,7 +34,7 @@ class FirestoreProductTest {
         // Ini akan mencegah 'Success' palsu jika device offline, dan memaksa network call.
         try {
             val settings = FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(false)
+                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
                 .build()
             firestore.firestoreSettings = settings
         } catch (e: Exception) {
