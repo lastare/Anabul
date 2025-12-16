@@ -3,6 +3,7 @@ package id.lastare.anabul
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.junit.Assert.assertNotNull
@@ -29,5 +30,11 @@ class FirebaseConnectionTest {
     fun testFirestoreInitialization() {
         val firestore = FirebaseFirestore.getInstance()
         assertNotNull("FirebaseFirestore should be initialized", firestore)
+    }
+
+    @Test
+    fun testAppCheckInitialization() {
+        val appCheck = FirebaseAppCheck.getInstance()
+        assertNotNull("FirebaseAppCheck should be initialized", appCheck)
     }
 }

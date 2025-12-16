@@ -10,10 +10,14 @@ class AnabulApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
-            androidLogger()
-            androidContext(this@AnabulApp)
-            modules(appModule)
+        try {
+            startKoin {
+                androidLogger()
+                androidContext(this@AnabulApp)
+                modules(appModule)
+            }
+        } catch (e: Exception) {
+            // Koin already started
         }
     }
 }
