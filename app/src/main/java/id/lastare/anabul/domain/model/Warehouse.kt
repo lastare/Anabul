@@ -1,9 +1,13 @@
 package id.lastare.anabul.domain.model
 
-data class Stock(
+import id.lastare.anabul.domain.model.enum.Stock
+
+data class Warehouse(
     val id: String = "",
     val created: Long = System.currentTimeMillis(),
     val productId: String = "",
-    val inWarehouse: Boolean = true,
+    val productName: String = "",
     val quantity: Int = 0,
+    val status: Stock = Stock.IN,
+    val description: String = "",
 )
