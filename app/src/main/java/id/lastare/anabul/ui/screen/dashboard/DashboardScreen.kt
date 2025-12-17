@@ -220,14 +220,6 @@ fun DashboardContent(
                     }
                     item {
                         QuickActionItem(
-                            Icons.Filled.Kitchen,
-                            "Etalase",
-                            Color(0xFF00BFA6),
-                            onClick = onNavigateToShowcase
-                        )
-                    }
-                    item {
-                        QuickActionItem(
                             Icons.Filled.AccountBalanceWallet,
                             "Saldo",
                             Color(0xFFFFC107),
@@ -236,10 +228,10 @@ fun DashboardContent(
                     }
                     item {
                         QuickActionItem(
-                            Icons.Filled.Summarize,
-                            "Laporan",
-                            Color(0xFF2196F3),
-                            onClick = onNavigateToReport
+                            Icons.Filled.Kitchen,
+                            "Etalase",
+                            Color(0xFF00BFA6),
+                            onClick = onNavigateToShowcase
                         )
                     }
                     item {
@@ -247,6 +239,14 @@ fun DashboardContent(
                             Icons.Filled.Warehouse,
                             "Gudang",
                             Color(0xFFFF6584)
+                        )
+                    }
+                    item {
+                        QuickActionItem(
+                            Icons.Filled.Summarize,
+                            "Laporan",
+                            Color(0xFF2196F3),
+                            onClick = onNavigateToReport
                         )
                     }
                 }
@@ -331,13 +331,13 @@ fun SalesSummaryCard(onClick: () -> Unit = {}) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.TrendingUp,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
                         text = "+12% dari kemarin",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
