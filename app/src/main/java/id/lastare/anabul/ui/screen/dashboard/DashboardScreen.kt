@@ -61,6 +61,7 @@ fun DashboardScreen(
     onNavigateToStore: () -> Unit = {},
     onNavigateToShowcase: () -> Unit = {},
     onNavigateToBalance: () -> Unit = {},
+    onNavigateToWarehouse: () -> Unit = {},
     onNavigateToReport: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
@@ -73,6 +74,7 @@ fun DashboardScreen(
             onNavigateToStore = onNavigateToStore,
             onNavigateToShowcase = onNavigateToShowcase,
             onNavigateToBalance = onNavigateToBalance,
+            onNavigateToWarehouse = onNavigateToWarehouse,
             onNavigateToReport = onNavigateToReport
         )
     }
@@ -188,6 +190,7 @@ fun DashboardContent(
     onNavigateToStore: () -> Unit = {},
     onNavigateToShowcase: () -> Unit = {},
     onNavigateToBalance: () -> Unit = {},
+    onNavigateToWarehouse: () -> Unit = {},
     onNavigateToReport: () -> Unit = {}
 ) {
     LazyColumn(
@@ -238,7 +241,8 @@ fun DashboardContent(
                         QuickActionItem(
                             Icons.Filled.Warehouse,
                             "Gudang",
-                            Color(0xFFFF6584)
+                            Color(0xFFFF6584),
+                            onClick = onNavigateToWarehouse
                         )
                     }
                     item {
