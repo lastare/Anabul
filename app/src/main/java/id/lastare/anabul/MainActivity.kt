@@ -17,6 +17,7 @@ import id.lastare.anabul.ui.screen.report.ReportScreen
 import id.lastare.anabul.ui.screen.showcase.ShowcaseScreen
 import id.lastare.anabul.ui.screen.splash.SplashScreen
 import id.lastare.anabul.ui.screen.store.StoreScreen
+import id.lastare.anabul.ui.screen.warehouse.AddStockScreen
 import id.lastare.anabul.ui.screen.warehouse.WarehouseScreen
 import id.lastare.anabul.ui.theme.AnabulTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -46,6 +47,7 @@ sealed class Screen(val route: String) {
     data object Balance : Screen("balance")
     data object Report : Screen("report")
     data object Warehouse : Screen("warehouse")
+    data object AddStock : Screen("add_stock")
 }
 
 @Composable
@@ -150,7 +152,14 @@ fun AppNavigation() {
         composable(Screen.Warehouse.route) {
             WarehouseScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onAddStock = { navController.navigate(Screen.AddProduct.route) }
+                onAddStock = { navController.navigate(Screen.AddProduct.route) },
+                onMutateStock = { navController.navigate(Screen.AddStock.route) }
+            )
+        }
+        
+        composable(Screen.AddStock.route) {
+            AddStockScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

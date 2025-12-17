@@ -86,7 +86,7 @@ fun AddProductScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Pembelian Produk",
+                        "Penambahan Produk",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -118,8 +118,8 @@ fun AddProductScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = "Informasi Produk",
@@ -132,7 +132,7 @@ fun AddProductScreen(
                     OutlinedTextField(
                         value = sku,
                         onValueChange = { sku = it },
-                        label = { Text("SKU (Stock Keeping Unit)") },
+                        label = { Text("SKU") },
                         leadingIcon = { Icon(Icons.Default.QrCode, contentDescription = null) },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
@@ -173,11 +173,11 @@ fun AddProductScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Harga",
+                        text = "Harga Produk",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface

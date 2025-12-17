@@ -16,11 +16,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -30,40 +33,53 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import id.lastare.anabul.domain.model.Product
 import id.lastare.anabul.ui.theme.AnabulTheme
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddStockScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    viewModel: WarehouseViewModel = koinViewModel()
 ) {
-    var selectedProduct by remember { mutableStateOf("") }
-    var stockType by remember { mutableStateOf("Beli") }
+    var selectedProduct by remember { mutableStateOf<Product?>(null) }
+    var stockType by remember { mutableStateOf("IN") } // Default to IN
     var amount by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+    var productSearchQuery by remember { mutableStateOf("") }
 
-    // Dummy Products
-    val products = listOf("Bolt Ikan Ungu 1kg", "Whiskas Tuna 1.2kg", "Pasir Kucing Wangi", "Royal Canin Adult", "Me-O Creamy Treats")
+    val uiState by viewModel.uiState.collectAsState()
     
-    val filteredProducts = products.filter { 
-        it.contains(selectedProduct, ignoreCase = true) 
+    // Get products from ViewModel state
+    val products = when (uiState) {
+        is WarehouseUiState.Success -> (uiState as WarehouseUiState.Success).products
+        else -> emptyList()
+    }
+    
+    val filteredProducts = if (productSearchQuery.isEmpty()) {
+        products
+    } else {
+        products.filter { 
+            it.name.contains(productSearchQuery, ignoreCase = true) 
+        }
     }
 
     Scaffold(
@@ -113,40 +129,46 @@ fun AddStockScreen(
                         fontWeight = FontWeight.Bold
                     )
                     
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = selectedProduct,
-                            onValueChange = { 
-                                selectedProduct = it
-                                expanded = true
-                            },
-                            readOnly = false,
-                            placeholder = { Text("Cari produk...") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, enabled = true),
-                            shape = RoundedCornerShape(12.dp),
-                            singleLine = true
-                        )
-                        
-                        if (filteredProducts.isNotEmpty()) {
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                filteredProducts.forEach { product ->
-                                    DropdownMenuItem(
-                                        text = { Text(product) },
-                                        onClick = {
-                                            selectedProduct = product
-                                            expanded = false
-                                        }
-                                    )
+                    if (uiState is WarehouseUiState.Loading) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    } else {
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = { expanded = !expanded },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                value = selectedProduct?.name ?: productSearchQuery,
+                                onValueChange = { 
+                                    productSearchQuery = it
+                                    selectedProduct = null
+                                    expanded = true
+                                },
+                                readOnly = false,
+                                placeholder = { Text("Cari produk...") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, enabled = true),
+                                shape = RoundedCornerShape(12.dp),
+                                singleLine = true
+                            )
+                            
+                            if (filteredProducts.isNotEmpty()) {
+                                ExposedDropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    filteredProducts.forEach { product ->
+                                        DropdownMenuItem(
+                                            text = { Text(product.name) },
+                                            onClick = {
+                                                selectedProduct = product
+                                                productSearchQuery = product.name
+                                                expanded = false
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -154,7 +176,7 @@ fun AddStockScreen(
                 }
             }
 
-            // Amount Input (Moved Up)
+            // Amount Input
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -183,7 +205,7 @@ fun AddStockScreen(
                 }
             }
 
-            // Transaction Type (Moved Down)
+            // Transaction Type (IN/OUT)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -202,52 +224,60 @@ fun AddStockScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Radio Button for "Beli"
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        // Radio Button for "IN"
+                        Card(
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable { stockType = "Beli" }
-                                .padding(vertical = 4.dp)
+                                .clickable { stockType = "IN" },
+                             shape = RoundedCornerShape(12.dp),
+                             colors = CardDefaults.cardColors(
+                                 containerColor = if (stockType == "IN") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                                 contentColor = if (stockType == "IN") MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                             ),
+                             border = if (stockType == "IN") null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         ) {
-                            RadioButton(
-                                selected = stockType == "Beli",
-                                onClick = { stockType = "Beli" }
-                            )
-                            Text(text = "Beli".uppercase(), style = MaterialTheme.typography.bodySmall)
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(Icons.Default.ArrowDownward, contentDescription = null, tint = Color(0xFF4CAF50))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "MASUK (IN)",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
 
-                        // Radio Button for "Rak"
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        // Radio Button for "OUT"
+                        Card(
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable { stockType = "Rak" }
-                                .padding(vertical = 4.dp)
+                                .clickable { stockType = "OUT" },
+                             shape = RoundedCornerShape(12.dp),
+                             colors = CardDefaults.cardColors(
+                                 containerColor = if (stockType == "OUT") MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
+                                 contentColor = if (stockType == "OUT") MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface
+                             ),
+                             border = if (stockType == "OUT") null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         ) {
-                            RadioButton(
-                                selected = stockType == "Rak",
-                                onClick = { stockType = "Rak" }
-                            )
-                            Text(text = "Rak".uppercase(), style = MaterialTheme.typography.bodySmall)
-                        }
-                        
-                        // Radio Button for "Keluar"
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable { stockType = "Keluar" }
-                                .padding(vertical = 4.dp)
-                        ) {
-                            RadioButton(
-                                selected = stockType == "Keluar",
-                                onClick = { stockType = "Keluar" },
-                                colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.error)
-                            )
-                            Text(text = "Keluar".uppercase(), style = MaterialTheme.typography.bodySmall)
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(Icons.Default.ArrowUpward, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "KELUAR (OUT)",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -261,14 +291,15 @@ fun AddStockScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
+                enabled = selectedProduct != null && amount.isNotEmpty(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = if (stockType == "IN") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                 )
             ) {
                 Icon(Icons.Default.Save, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Mutasi Produk",
+                    text = "Simpan Mutasi",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

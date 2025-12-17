@@ -7,12 +7,14 @@ import id.lastare.anabul.data.repository.ProductRepositoryImpl
 import id.lastare.anabul.domain.repository.AuthRepository
 import id.lastare.anabul.domain.repository.ProductRepository
 import id.lastare.anabul.domain.usecase.AddProductUseCase
+import id.lastare.anabul.domain.usecase.GetProductsUseCase
 import id.lastare.anabul.domain.usecase.LoginUseCase
 import id.lastare.anabul.domain.usecase.RegisterUseCase
 import id.lastare.anabul.ui.screen.login.LoginViewModel
 import id.lastare.anabul.ui.screen.product.AddProductViewModel
 import id.lastare.anabul.ui.screen.register.RegisterViewModel
 import id.lastare.anabul.ui.screen.splash.SplashViewModel
+import id.lastare.anabul.ui.screen.warehouse.WarehouseViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -29,10 +31,12 @@ val appModule = module {
     factory { LoginUseCase(get()) }
     factory { RegisterUseCase(get()) }
     factory { AddProductUseCase(get()) }
+    factory { GetProductsUseCase(get()) }
 
     // ViewModel
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { AddProductViewModel(get()) }
+    viewModel { WarehouseViewModel(get()) }
 }
