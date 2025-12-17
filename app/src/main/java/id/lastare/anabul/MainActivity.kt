@@ -149,7 +149,8 @@ fun AppNavigation() {
 
         composable(Screen.Warehouse.route) {
             WarehouseScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onAddStock = { navController.navigate(Screen.AddProduct.route) }
             )
         }
     }
