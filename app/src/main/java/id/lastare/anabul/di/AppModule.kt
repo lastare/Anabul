@@ -8,6 +8,7 @@ import id.lastare.anabul.domain.usecase.LoginUseCase
 import id.lastare.anabul.domain.usecase.RegisterUseCase
 import id.lastare.anabul.ui.screen.login.LoginViewModel
 import id.lastare.anabul.ui.screen.register.RegisterViewModel
+import id.lastare.anabul.ui.screen.splash.SplashViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -26,4 +27,5 @@ val appModule = module {
     // ViewModel
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
+    viewModel { SplashViewModel(get()) }
 }

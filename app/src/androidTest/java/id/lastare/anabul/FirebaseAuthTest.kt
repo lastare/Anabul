@@ -51,11 +51,22 @@ class FirebaseAuthTest {
 
     @Test
     fun testRegisterAndLoginFlow() {
-        // --- 0. Handle Initial State ---
+        // --- 0. Handle Initial State & Splash Screen ---
         
         composeTestRule.waitForIdle()
+
+        // Wait for Splash Screen to disappear
+        composeTestRule.waitUntil(timeoutMillis = 20000) {
+            try {
+                val dashboardExists = composeTestRule.onAllNodesWithText("Kerja Cepat").fetchSemanticsNodes().isNotEmpty()
+                val loginExists = composeTestRule.onAllNodesWithText("Masuk Akun").fetchSemanticsNodes().isNotEmpty()
+                dashboardExists || loginExists
+            } catch (e: Exception) {
+                false
+            }
+        }
         
-        // Check for a Dashboard-specific element to confirm we are on Dashboard
+        // Check if we are already logged in (Dashboard)
         val isOnDashboard = try {
             composeTestRule.onNodeWithText("Kerja Cepat").assertExists()
             true
@@ -68,6 +79,15 @@ class FirebaseAuthTest {
             composeTestRule.onNodeWithText("H").performClick()
             composeTestRule.onNodeWithText("Keluar").performClick()
             composeTestRule.waitForIdle()
+            
+             // Wait for transition to Login Screen
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
+                 try {
+                    composeTestRule.onAllNodesWithText("Masuk Akun").fetchSemanticsNodes().isNotEmpty()
+                } catch (e: Exception) {
+                    false
+                }
+            }
         }
 
         // Now we should be at Login Screen
@@ -96,9 +116,8 @@ class FirebaseAuthTest {
         // Wait for dashboard specific element "Kerja Cepat". 
         composeTestRule.waitUntil(timeoutMillis = 30000) {
             try {
-                composeTestRule.onNodeWithText("Kerja Cepat").assertExists()
-                true
-            } catch (e: AssertionError) {
+                composeTestRule.onAllNodesWithText("Kerja Cepat").fetchSemanticsNodes().isNotEmpty()
+            } catch (e: Exception) {
                 false
             }
         }
@@ -115,9 +134,8 @@ class FirebaseAuthTest {
         // Verify we are back to Login Screen
         composeTestRule.waitUntil(timeoutMillis = 10000) {
             try {
-                composeTestRule.onNodeWithText("Masuk Akun").assertExists()
-                true
-            } catch (e: AssertionError) {
+                composeTestRule.onAllNodesWithText("Masuk Akun").fetchSemanticsNodes().isNotEmpty()
+            } catch (e: Exception) {
                 false
             }
         }
@@ -126,19 +144,14 @@ class FirebaseAuthTest {
         composeTestRule.onNodeWithTag("login_email").performTextInput(testUserEmail)
         composeTestRule.onNodeWithTag("login_password").performTextInput(testUserPassword)
         
-        // Removed performImeAction() as field uses default action. 
-        // Try closing keyboard via back press if needed, but usually clicking button works.
-        // composeTestRule.activity.onBackPressed() // Alternative if button is covered
-        
         composeTestRule.onNodeWithTag("login_button").performClick()
 
         // --- 6. Verify Dashboard again ---
         // Wait for Dashboard unique element
         composeTestRule.waitUntil(timeoutMillis = 30000) {
             try {
-                composeTestRule.onNodeWithText("Kerja Cepat").assertExists()
-                true
-            } catch (e: AssertionError) {
+                composeTestRule.onAllNodesWithText("Kerja Cepat").fetchSemanticsNodes().isNotEmpty()
+            } catch (e: Exception) {
                 false
             }
         }
